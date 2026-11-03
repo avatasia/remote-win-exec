@@ -24,7 +24,7 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\install-chann
 
 | 参数 | 作用 |
 | --- | --- |
-| `-Check` | 只报告装了什么、哪里不一致，不改任何东西 |
+| `-Check` | 只报告两端装了什么、哪里不一致，不改任何东西（会只读地读一次对端哈希） |
 | `-SetDefaultShell` | 顺带把对端 sshd 默认 shell 设成 pwsh（需要在对端有提权会话） |
 
 ## 手动部署（不想跑脚本时）

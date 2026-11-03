@@ -18,14 +18,14 @@
 ## 安装（第一对机器）
 
 前置：两台 Windows 已能免密 SSH 互通 —— 装好 OpenSSH 服务端、交换公钥、两端写好
-`/.ssh/config`。安装器**不**负责建 key 或开服务。
+`~/.ssh/config`。安装器**不**负责建 key 或开服务。
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>scriptsinstall-channel.ps1" -RemoteHost '<peer-user>@<peer-alias>'
+pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\install-channel.ps1" -RemoteHost '<peer-user>@<peer-alias>'
 ```
 
-它把 wrapper 渲染到 `/.ssh/rsh.ps1`，把 skill 目录连同 runner 部署到对端，最后跑一个探针
-载荷验证通道。全程幂等：再跑一次只报 `[same]`。`-Check` 只看现状、不改任何东西。
+它把 wrapper 渲染到 `~/.ssh/rsh.ps1`，把 skill 目录连同 runner 部署到对端，最后跑一个探针
+载荷验证通道。全程幂等：再跑一次只报 `[same]`。`-Check` 只报告两端现状、不改任何东西（会只读地读一次对端哈希）。
 
 ## 怎么用
 
@@ -62,15 +62,17 @@ remote-win-exec/
 
 ## 回归
 
+在 skill 目录下执行：
+
 ```powershell
 # 正向（本机 → 对端）：编码、歧义字节、stderr、退出码、大载荷
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".scripts	est-forward.ps1" -RemoteHost '<peer-user>@<peer-alias>'
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\test-forward.ps1" -RemoteHost '<peer-user>@<peer-alias>'
 
 # 反向（对端 → 本机）：输出、退出码、stderr
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".scripts	est-reverse.ps1" -RemoteHost '<peer-user>@<peer-alias>'
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\test-reverse.ps1" -RemoteHost '<peer-user>@<peer-alias>'
 
 # 只读体检
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".scriptscheck-channel.ps1"
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\check-channel.ps1"
 ```
 
 ## 许可

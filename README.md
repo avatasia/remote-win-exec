@@ -23,13 +23,13 @@ SSH - OpenSSH Server installed, keys exchanged, `~/.ssh/config` written on both
 sides. The installer does not create keys or services.
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>scriptsinstall-channel.ps1" -RemoteHost '<peer-user>@<peer-alias>'
+pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\install-channel.ps1" -RemoteHost '<peer-user>@<peer-alias>'
 ```
 
-It renders the wrapper into `/.ssh/rsh.ps1`, deploys this skill directory to the peer
+It renders the wrapper into `~/.ssh/rsh.ps1`, deploys this skill directory to the peer
 together with the runner, and probes the channel end to end. It is idempotent: a
-second run reports `[same]` and changes nothing. `-Check` reports what is installed
-without touching anything.
+second run reports `[same]` and changes nothing. `-Check` reports what is installed on
+both sides - it reads the peer's hashes - and changes nothing.
 
 ## Use
 
@@ -71,15 +71,17 @@ remote-win-exec/
 
 ## Regression
 
+Run these from the skill directory:
+
 ```powershell
 # forward (this machine → peer): encodings, ambiguous bytes, stderr, exit codes, large payloads
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".scripts	est-forward.ps1" -RemoteHost '<peer-user>@<peer-alias>'
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\test-forward.ps1" -RemoteHost '<peer-user>@<peer-alias>'
 
 # reverse (peer → this machine): output, exit code, stderr
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".scripts	est-reverse.ps1" -RemoteHost '<peer-user>@<peer-alias>'
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\test-reverse.ps1" -RemoteHost '<peer-user>@<peer-alias>'
 
 # read-only health check
-pwsh -NoProfile -ExecutionPolicy Bypass -File ".scriptscheck-channel.ps1"
+pwsh -NoProfile -ExecutionPolicy Bypass -File ".\scripts\check-channel.ps1"
 ```
 
 ## Licence

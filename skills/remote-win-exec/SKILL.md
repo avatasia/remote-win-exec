@@ -47,8 +47,8 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\install-chann
 `<skill-dir>` is the directory this `SKILL.md` lives in. The installer renders the wrapper into
 `~/.ssh/rsh.ps1`, deploys this skill directory to the peer together with the runner, and
 then probes the channel end to end. It is idempotent: running it again reports
-`[same]` and changes nothing. `-Check` reports what is installed without touching
-anything.
+`[same]` and changes nothing. `-Check` reports what is installed on
+both sides - it reads the peer's hashes - and changes nothing.
 
 The installer does **not** create SSH keys or the `sshd` service — the two machines
 must already reach each other with public-key auth. Everything else the skill
