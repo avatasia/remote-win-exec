@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "remote-win-exec",
+  "displayName": "Remote Windows Exec",
+  "version": "1.0.0",
+  "description": "Run PowerShell commands and scripts on a paired remote Windows machine over a pre-provisioned SSH channel, in both directions, with exit codes and encodings preserved. / 在配对的远端 Windows 机器上双向执行 PowerShell 命令与脚本，退出码与编码原样回传。",
+  "author": "avatasia",
+  "icon": "icon.png",
+  "category": "Code",
+  "exampleQueries": [
+    "在远端跑一下这段脚本",
+    "到那台远程 Windows 机器看看服务状态",
+    "run this on the remote box"
+  ],
+  "apps": [],
+  "mcpServers": [],
+  "skills": ["skills/remote-win-exec/SKILL.md"]
+}
