@@ -3,8 +3,8 @@
 在**配对的另一台 Windows 机器**上执行 PowerShell 命令与脚本，**双向**可用，通道是已经
 建好的 SSH。
 
-这是一个 MiniMax Code **skill**，且它带上的是**整套通道**而不只是调用规则：本机 wrapper、
-对端 runner、一键安装器、只读体检脚本，以及两个端到端回归套件。
+这是一个 MiniMax Code **插件**（内含一个 skill），而这个 skill 带上的是**整套通道**而不只是调用规则：
+本机 wrapper、对端 runner、一键安装器、只读体检脚本、两个端到端回归套件，以及一个可选的 profile 助手。
 
 | | |
 | --- | --- |
@@ -26,6 +26,10 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\install-chann
 
 它把 wrapper 渲染到 `~/.ssh/rsh.ps1`，把 skill 目录连同 runner 部署到对端，最后跑一个探针
 载荷验证通道。全程幂等：再跑一次只报 `[same]`。`-Check` 只报告两端现状、不改任何东西（会只读地读一次对端哈希）。
+
+**可选：** 包里还带 `scripts\set-utf8-profile.ps1`，它报告 PowerShell profile 是否把控制台设成 UTF-8，只有加
+`-Apply` 才会写入（写之前先备份）。默认不启用，通道也不需要它 —— 通道的输出本来就是 UTF-8（runner
+已经处理）。只有在**交互式 shell** 里中文乱码时才用它。
 
 ## 怎么用
 
@@ -52,12 +56,13 @@ remote-win-exec/
 ├── icon.png
 ├── LICENSE
 ├── README.md                       英文版（本文件结构对应 README.zh-CN.md）
-├── README.zh-CN.md
-├── docs/                           OpenSSH 前置、通道部署、客户端退出行为
+├── README.zh-CN.md                   本文件
+├── docs/                           OpenSSH 前置、通道部署、客户端退出行为（仅中文）
 └── skills/remote-win-exec/         skill 本体
     ├── SKILL.md                    agent 遵循的规则
     ├── references/                 环境快照、症状表、判码说明
-    └── scripts/                    wrapper、runner、安装器、体检、回归
+    └── scripts/                    wrapper、runner、安装器、体检、回归、
+                                      可选 profile 助手
 ```
 
 ## 回归

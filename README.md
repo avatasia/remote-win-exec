@@ -3,9 +3,10 @@
 Run PowerShell commands and scripts on a **paired remote Windows machine** over a
 pre-provisioned SSH channel, in **both directions**.
 
-This is a MiniMax Code **skill** that ships the whole channel, not only the
-calling rules: the local wrapper, the remote runner, the installer, a read-only
-health check and two end-to-end regression suites.
+This is a MiniMax Code **plugin** carrying one skill, and that skill ships the
+whole channel, not only the calling rules: the local wrapper, the remote runner,
+the installer, a read-only health check, two end-to-end regression suites and one
+optional profile helper.
 
 | | |
 | --- | --- |
@@ -30,6 +31,12 @@ It renders the wrapper into `~/.ssh/rsh.ps1`, deploys this skill directory to th
 together with the runner, and probes the channel end to end. It is idempotent: a
 second run reports `[same]` and changes nothing. `-Check` reports what is installed on
 both sides - it reads the peer's hashes - and changes nothing.
+
+**Optional:** the package also ships `scripts\set-utf8-profile.ps1`, which reports whether a
+PowerShell profile sets a UTF-8 console and, only with `-Apply`, adds it (backing the file
+up first). It is off by default and the channel does not need it - the runner already
+makes the channel's output UTF-8. Reach for it when an *interactive* shell garbles
+Chinese.
 
 ## Use
 
@@ -61,12 +68,13 @@ remote-win-exec/
 ├── icon.png
 ├── LICENSE
 ├── README.md                       this file
-├── README.zh-CN.md
-├── docs/                           OpenSSH setup, deployment, client behaviour
+├── README.zh-CN.md                   the Chinese version
+├── docs/                           OpenSSH setup, deployment, client behaviour (Chinese only)
 └── skills/remote-win-exec/         the skill itself
     ├── SKILL.md                    the rules the agent follows
     ├── references/                 environment snapshot, symptom table, charset notes
-    └── scripts/                    wrapper, runner, installer, health check, regressions
+    └── scripts/                    wrapper, runner, installer, health check, regressions,
+                                      optional profile helper
 ```
 
 ## Regression
