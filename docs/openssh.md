@@ -108,15 +108,36 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Pr
 - 设成 pwsh 是**推荐不是前提** —— 通道的 wrapper 会探测目标当前设置并自适应
   （pwsh / Windows PowerShell 5.1 / cmd.exe 都实测过）。
 
-## 8. 控制台编码基线
+## 8. 控制台编码（可选，默认不装）
 
-系统 ANSI 码页保持 936 不动（改它会影响别的程序）；**控制台**码页和 PowerShell 输出编码设 UTF-8，
-在两端 PowerShell profile 里加（PS 7 与 Windows PowerShell 5.1 的 profile 是两个文件）：
+系统 ANSI 码页保持 936 不动（改它会影响别的程序）。**通道本身不需要这一节**：远端 runner 在启动
+载荷前已经 `chcp 65001`，所以走通道的输出本来就是 UTF-8。
+
+这一节只关系到**交互式 shell**（人坐在终端前敲命令，或手工起的程序）：那种场景下控制台码页
+还是系统的 ANSI 码页（936），中文会显示成乱码。
+
+**默认不加。** 只有交互式 shell 里确实出现中文乱码时，才按下面加（加在需要用的那一侧）：
+
+| 场景 | 文件 |
+| --- | --- |
+| PowerShell 7，当前用户当前主机 | `$PROFILE.CurrentUserCurrentHost` |
+| PowerShell 7，当前用户所有主机 | `$PROFILE.CurrentUserAllHosts` |
+| Windows PowerShell 5.1 | 另一套 profile 路径，5.1 与 7 各一份 |
+
+加进去的内容（两行）：
 
 ```powershell
 chcp 65001 > $null
 $OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 ```
+
+也可以让 skill 的脚本代劳（它会先备份原文件，重复跑不会加第二遍）：
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\set-utf8-profile.ps1" -Apply
+```
+
+改完新开一个交互式 shell，`chcp` 应打印 65001；已经开着的 shell 仍是旧码页。
 
 ## 9. 排查
 

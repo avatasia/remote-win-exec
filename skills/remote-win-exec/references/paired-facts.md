@@ -12,6 +12,7 @@ anything you depend on before using it; the "re-measure" column is the command.
 | SSH default shell, both machines | `C:\Program Files\PowerShell\7\pwsh.exe` (pwsh 7.6.9) | 2026-11-03 | `ssh <remote-host> reg query HKLM\SOFTWARE\OpenSSH /v DefaultShell` |
 | System ANSI code page | 936 | 2026-11-03 | `chcp` in a cmd shell — `[Text.Encoding]::Default` under .NET Core returns utf-8 and is **not** the ACP |
 | Console code page (interactive) | 65001 | 2026-11-03 | `chcp` |
+| Interactive UTF-8 profile | the current user's PowerShell profile carries the `chcp 65001` block on both machines | 2026-11-04 | `Select-String -Path $PROFILE -Pattern 'chcp\s+65001'` |
 | Remote account privileges | in the local `Administrators` group, so SSH sessions are elevated | 2026-11-03 | `ssh <remote-host> "net localgroup Administrators"` |
 | Disk headroom | the data volume was low | 2026-11-03 | `ssh <remote-host> "Get-PSDrive -PSProvider FileSystem"` |
 | Repos under `<projects-dir>` | 5 `.git` directories but only 4 real repos — `<projects-dir>\.git` is a skeleton (no HEAD / config / index), so `git -C <projects-dir>` fails | 2026-11-03 | see below |

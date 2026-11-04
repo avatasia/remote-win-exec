@@ -36,7 +36,8 @@ be shared. Resolve them at runtime rather than hard-coding them:
 ## Setup — first run on a pair
 
 This skill ships the whole channel, not just the calling rules: `scripts/` holds the
-local wrapper, the remote runner, the installer and the two regression suites.
+local wrapper, the remote runner, the installer, the two regression suites and one
+optional helper for the interactive-shell code page.
 Until the channel is deployed on the pair, nothing in this skill can run, so
 deploy it first:
 
@@ -205,12 +206,20 @@ the remote's output instead of mangling it.** Three layers cooperate:
 | Layer | Role |
 | --- | --- |
 | Remote runner `$env:USERPROFILE\bin\rsh.ps1` | runs `chcp 65001` before launching the payload, so a PowerShell payload writes UTF-8 |
-| Both machines' PowerShell profiles | `chcp 65001` plus UTF-8 `$OutputEncoding` / `[Console]::OutputEncoding`, so interactive shells are UTF-8 too (the remote user's profile is on a non-system drive) |
+| PowerShell profiles — **optional, not installed by this skill** | `chcp 65001` plus UTF-8 `$OutputEncoding` / `[Console]::OutputEncoding`; affects *interactive* shells only, and is worth adding only if the user reports garbled text there (see `references/troubleshooting.md`) |
 | Local wrapper `$env:USERPROFILE\.ssh\rsh.ps1` | reads ssh's stdout as **raw bytes** and **detects** the charset: declared encoding first (BOM), then a plausibility vote between UTF-8, the ANSI code page (936) and both UTF-16 orders |
 
 The wrapper reads the pipe's `BaseStream` directly instead of letting the shell
 decode it. PowerShell would decode a native command's stdout with the console
 code page, turning a remote GBK byte into U+FFFD before any fix was possible.
+
+**The profile lines are optional and this skill does not install them.** They only
+matter for an *interactive* shell (a person at a prompt, a program started by
+hand), never for the channel — payloads run with `-NoProfile` and the runner
+already sets the console to UTF-8. If the user reports garbled Chinese in a
+terminal they are sitting at, point at `references/troubleshooting.md` and
+offer `scripts/set-utf8-profile.ps1 -Apply`; it writes to a profile file,
+so tell the user first and let them decide.
 
 ### How the detection works
 

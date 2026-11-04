@@ -44,6 +44,17 @@ Known limit: the detector votes on **common** Chinese characters, so a line
 built only from uncommon characters can still be misread. An explicit encoding
 always beats detection.
 
+## Garbled text in an **interactive** shell (the channel itself is fine)
+
+The symptom above is about the channel's output. This one is about a terminal the
+user is sitting at: the channel passes Chinese through correctly, but their own
+console still uses the system ANSI code page (936 on a Chinese Windows).
+
+| Probe | Result | Action |
+| --- | --- | --- |
+| `chcp` in the affected terminal | prints a code page other than 65001 | the console is not UTF-8. **Optional** fix: add the two UTF-8 lines to that shell's PowerShell profile — `scripts/set-utf8-profile.ps1 -Apply` (it backs the file up first), or edit the profile by hand. Tell the user first: it changes what every new shell starts with, and the channel does not need it |
+| | prints 65001 | the console is already UTF-8; the cause is elsewhere — use the table above |
+
 ## `Permission denied (publickey)`
 
 | Probe | Result | Action |
